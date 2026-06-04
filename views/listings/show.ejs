@@ -20,7 +20,8 @@
     Country: <%= listing.country %>
     </p>
 
-    <div id="listingMap" class="listing-map mb-3" data-location="<%= listing.location %>" data-country="<%= listing.country %>"></div>
+    <p class="small text-muted mb-2 mt-3">Where you'll stay</p>
+    <div id="listingMap" class="listing-map mb-3" data-location="<%= listing.location %>" data-country="<%= listing.country %>" aria-label="Map of <%= listing.location %>, <%= listing.country %>"></div>
 </div>
     </div>
     <% if(currentUser && listing.owner._id.equals(currentUser._id)) { %>
@@ -93,5 +94,4 @@
           <hr>
         
     </div>
-    <script src="/js/listingMap.js"></script>
   </body>

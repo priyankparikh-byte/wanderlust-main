@@ -104,22 +104,61 @@ body{
 
 .filter-panel .btn-lg{
     min-height: 3rem;
+    transition: background-color 0.2s ease, transform 0.15s ease;
 }
 
-.filter-pill-group .btn{
-    border-radius: 999px;
+.filter-panel .btn-lg:active{
+    transform: scale(0.98);
+}
+
+.filter-panel .form-control:focus,
+.filter-panel .form-select:focus{
+    border-color: #222;
+    box-shadow: 0 0 0 0.2rem rgba(0,0,0,0.08);
+}
+
+.listings-header h3{
+    font-weight: 700;
+}
+
+.listings-grid{
+    animation: fadeIn 0.35s ease-out;
+}
+
+@keyframes fadeIn{
+    from{ opacity: 0; transform: translateY(6px); }
+    to{ opacity: 1; transform: translateY(0); }
+}
+
+.listing-link{
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.listing-link:hover{
+    transform: translateY(-4px);
+}
+
+.listing-link:hover .listing-card{
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
 }
 
 .listing-card{
     border: none !important;
-    margin-bottom: 2rem;
-    
+    margin-bottom: 0;
+    transition: box-shadow 0.2s ease;
+    overflow: hidden;
 }
 
 .card-img-top{
     border-radius:1rem !important;
     width:100% !important;
+    height: 20rem;
     object-fit: cover !important;
+    transition: transform 0.35s ease;
+}
+
+.listing-link:hover .card-img-top{
+    transform: scale(1.03);
 }
 
 .card-body{
@@ -166,5 +205,42 @@ body{
     border-radius: 1rem;
     overflow: hidden;
     background-color: #f8f9fa;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(0,0,0,0.08);
+    position: relative;
+}
+
+.listing-map--loading::before{
+    content: "Loading map…";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 0.9rem;
+    z-index: 1;
+}
+
+.listing-map--empty{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.listing-map-iframe{
+    width: 100%;
+    height: 18rem;
+    border: 0;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.listing-map--ready .listing-map-iframe{
+    opacity: 1;
+}
+
+.listing-map--ready::before{
+    display: none;
 }

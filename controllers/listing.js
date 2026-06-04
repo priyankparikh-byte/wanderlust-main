@@ -1,9 +1,35 @@
 const Listing = require("../models/listing");
 
 
-module.exports.index =async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("listings/index.ejs", { allListings });
+module.exports.index = async (req, res) => {
+  const { location, minPrice, maxPrice, country, includeTaxes } = req.query;
+  const conditions = [];
+
+  if (location?.trim()) {
+    const re = new RegExp(location.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+    conditions.push({
+      $or: [{ location: re }, { country: re }, { title: re }],
+    });
+  }
+
+  if (country?.trim()) {
+    const re = new RegExp(country.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+    conditions.push({ country: re });
+  }
+
+  const price = {};
+  if (minPrice !== undefined && minPrice !== "") price.$gte = Number(minPrice);
+  if (maxPrice !== undefined && maxPrice !== "") price.$lte = Number(maxPrice);
+  if (Object.keys(price).length) conditions.push({ price });
+
+  const filter = conditions.length ? { $and: conditions } : {};
+  const allListings = await Listing.find(filter);
+
+  res.render("listings/index.ejs", {
+    allListings,
+    query: req.query,
+    includeTaxes: includeTaxes === "on",
+  });
 };
 
 module.exports.renderNewForm = (req, res) => {
