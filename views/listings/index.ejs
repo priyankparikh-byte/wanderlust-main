@@ -1,0 +1,75 @@
+ <% layout('/layouts/boilerplate') -%> 
+ 
+  <body>
+    <h3>All Listings</h3>
+
+    <section class="filter-panel mb-4 rounded-4 shadow-sm p-4">
+      <form action="/listings" method="GET" class="row g-3 align-items-end">
+        <div class="col-lg-4 col-md-6">
+          <label for="searchLocation" class="form-label text-uppercase fw-semibold small text-muted">Where</label>
+          <input id="searchLocation" name="location" type="text" class="form-control" placeholder="City, region, or property">
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <label class="form-label text-uppercase fw-semibold small text-muted">Price</label>
+          <div class="input-group">
+            <span class="input-group-text">₹</span>
+            <input name="minPrice" type="number" class="form-control" placeholder="Min" min="0">
+            <span class="input-group-text">to</span>
+            <input name="maxPrice" type="number" class="form-control" placeholder="Max" min="0">
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <label class="form-label text-uppercase fw-semibold small text-muted">Property type</label>
+          <select name="propertyType" class="form-select">
+            <option value="">Any</option>
+            <option value="entire">Entire place</option>
+            <option value="private">Private room</option>
+            <option value="shared">Shared room</option>
+          </select>
+        </div>
+        <div class="col-lg-2 col-md-6 d-grid">
+          <button type="submit" class="btn btn-dark btn-lg">Search</button>
+        </div>
+
+        <div class="col-12">
+          <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="taxSwitch" name="includeTaxes">
+              <label class="form-check-label" for="taxSwitch">Include taxes</label>
+            </div>
+            <div class="filter-pill-group d-flex flex-wrap gap-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm active">Instant Book</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm">Superhost</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm">Flexible Cancellation</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+      <% for(let listing of allListings) { %>
+        <div class="col">
+          <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark d-block h-100">
+            <div class="card listing-card h-100">
+              <% if (listing.image?.url || listing.image) { %>
+                <img src="<%= listing.image?.url || listing.image %>" class="card-img-top" alt="listing_image" style="height: 20rem;">
+              <% } %>
+              <div class="card-img-overlay"></div>
+              <div class="card-body">
+                <p class="card-text">
+                  <b><%= listing.title %></b><br>
+                  &#8377; <%= listing.price.toLocaleString("en-IN") %>/Night
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% } %>
+    </div>
+ 
+
+
+   
+  </body>
+
