@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: wanderlust
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: ATLAS_URI
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: CLOUD_NAME
+        sync: false
+      - key: CLOUD_API_KEY
+        sync: false
+      - key: CLOUD_API_SECRET
+        sync: false

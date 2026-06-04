@@ -63,19 +63,18 @@
           <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark d-block h-100 listing-link">
             <div class="card listing-card h-100">
               <% if (listing.image?.url || listing.image) { %>
-                <img src="<%= listing.image?.url || listing.image %>" class="card-img-top" alt="<%= listing.title %>"
-                  loading="lazy">
+                <div class="card-img-container">
+                  <img src="<%= listing.image?.url || listing.image %>" class="card-img-top" alt="<%= listing.title %>"
+                    loading="lazy">
+                  <div class="card-img-overlay-grad"></div>
+                </div>
               <% } %>
               <div class="card-body">
-                <p class="card-text mb-1">
-                  <b><%= listing.title %></b>
-                </p>
-                <p class="card-text text-muted small mb-1">
-                  <%= listing.location %>, <%= listing.country %>
-                </p>
-                <p class="card-text mb-0">
-                  &#8377; <%= displayPrice.toLocaleString("en-IN") %>/night
-                  <% if (includeTaxes) { %><span class="text-muted small">(incl. tax)</span><% } %>
+                <h5 class="card-title"><%= listing.title %></h5>
+                <p class="card-location"><%= listing.location %>, <%= listing.country %></p>
+                <p class="card-price mb-0">
+                  <b>&#8377; <%= displayPrice.toLocaleString("en-IN") %></b> <span>/ night</span>
+                  <% if (includeTaxes) { %><span class="text-muted small d-block">(incl. 18% tax)</span><% } %>
                 </p>
               </div>
             </div>
