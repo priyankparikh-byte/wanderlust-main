@@ -23,18 +23,26 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
-const MONGO_URL = process.env.ATLAS_URI;
- 
-main()
-  .then(() => {
-    console.log("connected to DB");
-  })
-  .catch((err) => {
-    console.log(err);
-  }); 
 
-async function main() {
-  await mongoose.connect(MONGO_URL);
+function getMongoUrl() {
+  const uri = process.env.ATLAS_URI;
+  if (!uri) return null;
+  if (/\.mongodb\.net\/[^/?]+/.test(uri)) return uri;
+  const q = uri.indexOf("?");
+  if (q === -1) return uri.replace(/\/?$/, "/wanderlust");
+  return uri.slice(0, q).replace(/\/?$/, "/wanderlust") + uri.slice(q);
+}
+
+const MONGO_URL = getMongoUrl();
+const sessionSecret = process.env.SECRET_KEY || process.env.SECRET;
+
+if (!MONGO_URL || !sessionSecret) {
+  console.error("Missing ATLAS_URI or SECRET_KEY in environment variables.");
+  process.exit(1);
+}
+
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
 }
 
 
@@ -48,22 +56,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
-const store =  MongoStore.create({
+const store = MongoStore.create({
   mongoUrl: MONGO_URL,
   crypto: {
-    secret: "mysupersecretcode" ,
+    secret: sessionSecret,
   },
-  touchAfter: 24 * 60 * 60, // time period in seconds
+  touchAfter: 24 * 60 * 60,
 });
 
 const sessionOptions = {
   store,
-  secret: process.env.SECRET_KEY,
+  secret: sessionSecret,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // expires in a week
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
@@ -135,9 +145,18 @@ app.use((err, req, res, next) => {
   
 });
 const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  console.log(`server is listening on port ${port}`);
-});
-// app.listen(8080, () => {
-//   console.log("server is listening to port 8080");
-// });
+
+async function start() {
+  try {
+    await mongoose.connect(MONGO_URL);
+    console.log("connected to DB");
+    app.listen(port, () => {
+      console.log(`server is listening on port ${port}`);
+    });
+  } catch (err) {
+    console.error("DB connection failed:", err.message);
+    process.exit(1);
+  }
+}
+
+start();

@@ -1,15 +1,14 @@
 <% layout('/layouts/boilerplate') -%>
-
-<body>
+<% const q = query || {}; %>
   <div class="listings-header d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
     <div>
       <h3 class="mb-1">Explore stays</h3>
       <p class="text-muted mb-0 small">
         <%= allListings.length %> listing<%= allListings.length === 1 ? "" : "s" %>
-        <% if (query.location || query.country || query.minPrice || query.maxPrice) { %> matching your search<% } %>
+        <% if (q.location || q.country || q.minPrice || q.maxPrice) { %> matching your search<% } %>
       </p>
     </div>
-    <% if (query.location || query.country || query.minPrice || query.maxPrice || includeTaxes) { %>
+    <% if (q.location || q.country || q.minPrice || q.maxPrice || includeTaxes) { %>
       <a href="/listings" class="btn btn-link btn-sm text-decoration-none">Clear filters</a>
     <% } %>
   </div>
@@ -19,23 +18,23 @@
       <div class="col-lg-4 col-md-6">
         <label for="searchLocation" class="form-label text-uppercase fw-semibold small text-muted">Where</label>
         <input id="searchLocation" name="location" type="text" class="form-control"
-          placeholder="City, region, or title" value="<%= query.location || '' %>">
+          placeholder="City, region, or title" value="<%= q.location || '' %>">
       </div>
       <div class="col-lg-3 col-md-6">
         <label class="form-label text-uppercase fw-semibold small text-muted">Price</label>
         <div class="input-group">
           <span class="input-group-text">₹</span>
           <input name="minPrice" type="number" class="form-control" placeholder="Min" min="0"
-            value="<%= query.minPrice || '' %>">
+            value="<%= q.minPrice || '' %>">
           <span class="input-group-text">to</span>
           <input name="maxPrice" type="number" class="form-control" placeholder="Max" min="0"
-            value="<%= query.maxPrice || '' %>">
+            value="<%= q.maxPrice || '' %>">
         </div>
       </div>
       <div class="col-lg-3 col-md-6">
         <label for="searchCountry" class="form-label text-uppercase fw-semibold small text-muted">Country</label>
         <input id="searchCountry" name="country" type="text" class="form-control" placeholder="e.g. Italy"
-          value="<%= query.country || '' %>">
+          value="<%= q.country || '' %>">
       </div>
       <div class="col-lg-2 col-md-6 d-grid">
         <button type="submit" class="btn btn-dark btn-lg">Search</button>
@@ -85,4 +84,3 @@
       <% } %>
     </div>
   <% } %>
-</body>
