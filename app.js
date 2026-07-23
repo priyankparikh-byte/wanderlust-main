@@ -148,7 +148,10 @@ const port = process.env.PORT || 8080;
 
 async function start() {
   try {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(MONGO_URL, {
+      tls: true,
+      tlsAllowInvalidCertificates: true
+    });
     console.log("connected to DB");
     app.listen(port, () => {
       console.log(`server is listening on port ${port}`);
