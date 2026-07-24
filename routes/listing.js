@@ -10,10 +10,13 @@ const listingController = require("../controllers/listing.js");
 const multer  = require("multer");
 const {storage} = require("../cloudConfig.js");
 const upload = multer({ storage: storage });
+const { cacheMiddleware } = require("../utils/cache.js");
 
+const indexCacheKey = (req) => `listings:index:${JSON.stringify(req.query)}`;
+const showCacheKey = (req) => `listing:${req.params.id}`;
 
 router.route("/")
-.get(wrapAsync(listingController.index))
+.get(cacheMiddleware(300, indexCacheKey), wrapAsync(listingController.index))
 .post(isLoggedIn, upload.single("listing[image]"), validateListing, wrapAsync(listingController.createListing));
 
 
@@ -21,7 +24,7 @@ router.route("/")
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 
 router.route("/:id")
-.get(wrapAsync(listingController.showListing))
+.get(cacheMiddleware(600, showCacheKey), wrapAsync(listingController.showListing))
 .put(  isLoggedIn
   ,isOwner,upload.single("listing[image]"),validateListing, wrapAsync(listingController.updateListing))
 .delete( isLoggedIn,
@@ -34,4 +37,4 @@ router.get("/:id/edit", isLoggedIn
 
 
 
-module.exports = router;
+module.exports = router;

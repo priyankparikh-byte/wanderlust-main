@@ -18,7 +18,8 @@ const lisitingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/reviews.js");
 const userRouter = require("./routes/user.js");
 const session = require("express-session");
-const MongoStore = require('connect-mongo').default;
+const { RedisStore } = require("connect-redis");
+const redisClient = require("./redisClient.js");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -56,12 +57,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
-const store = MongoStore.create({
-  mongoUrl: MONGO_URL,
-  crypto: {
-    secret: sessionSecret,
-  },
-  touchAfter: 24 * 60 * 60,
+const store = new RedisStore({
+  client: redisClient,
+  prefix: "sess:",
 });
 
 const sessionOptions = {
@@ -83,9 +81,6 @@ app.get("/", (req, res) => {
 });
 
 
-store.on("error", function (e) {
-  console.log("Session store error:", e);
-});
 // Mount routers after middleware so `req.body` and other middleware are available
 app.use(session(sessionOptions));
 app.use(flash());
