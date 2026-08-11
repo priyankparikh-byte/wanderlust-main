@@ -12,6 +12,8 @@ Wanderlust is an Airbnb-inspired CRUD web application built with scalability and
 * Jest-based testing support
 * Cloud and deployment configuration
 * usinf testing # Tech Stack
+* end to end testing
+* 
 
 * Node.js
 * Express.js
