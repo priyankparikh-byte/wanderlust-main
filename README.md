@@ -1,6 +1,6 @@
 # Wanderlust
 
-Wanderlust is an Airbnb-inspired CRUD web application built with scalability and production-readiness in mind. It includes features and architecture choices aimed at making the project more robust, efficient, and extensible.
+Wanderlust is an Airbnb-inspired CRUD application built with scalability and production-readiness in mind. It includes features and architecture choices aimed at making the project more robust, efficient, and extensible.
 
 ## Features
 
